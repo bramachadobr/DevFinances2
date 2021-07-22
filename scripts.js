@@ -41,14 +41,14 @@ const Transaction = {
         data: '23/01/2021',
     }],
 
-    add(transaction){
+    add(transaction) {
         Transaction.all.push(transaction)
         console.log(Transaction.all)
         App.Reload()
     },
 
-    remove(index){
-        Transaction.all.splice(index,1)
+    remove(index) {
+        Transaction.all.splice(index, 1)
         App.Reload();
     },
 
@@ -78,7 +78,7 @@ const Transaction = {
         return Transaction.incons() + Transaction.expenses()
 
     }
-    
+
 }
 
 const DOM = {
@@ -98,7 +98,7 @@ const DOM = {
         const html = `
         <td class="description">${transaction.description}</td>
         <td class="${CSSclass}">${amount}</td>
-        <td class="date">${transaction.data}</td>
+        <td class="date">${transaction.date}</td>
         <td><img src="./assets/minus.svg" alt="Remover transação"></td>
         `
         return html
@@ -110,12 +110,21 @@ const DOM = {
         document.getElementById("totalDisplay").innerHTML = Utils.formatCurrency(Transaction.total())
     },
 
-    clearTransactions(){
+    clearTransactions() {
         DOM.transactionContainer.innerHTML = ""
     }
 }
 
 const Utils = {
+    formatAmount(value) {
+        value = Number(value) * 100
+        return value
+    },
+    formatDate(value) {
+        const splitteDate = value.split("-")
+        console.log(splitteDate)
+        return `${splitteDate[2]}/${splitteDate[1]}/${splitteDate[0]}`
+    },
     formatCurrency(value) {
         const signal = Number(value) < 0 ? "-" : ""
         value = String(value).replace(/\D/g, "")
@@ -129,20 +138,85 @@ const Utils = {
     }
 }
 
-const App ={
-    Init(){
+
+const Form = {
+
+    description: document.querySelector('input#description'),
+    amount: document.querySelector('input#amount'),
+    date: document.querySelector('input#date'),
+
+    getValues() {
+        return {
+            description: this.description.value,
+            amount: this.amount.value,
+            date: this.date.value
+        }
+    },
+
+    validateFildes() {
+        let { description, amount, date } = this.getValues()
+
+        if (!description.trim() || amount.trim() === "" || date.trim() === "") {
+            throw new Error("Por vafor preeencha todos os campos")
+        }
+    },
+
+    formatValues() {
+        let { description, amount, date } = this.getValues()
+        amount = Utils.formatAmount(amount)
+        date = Utils.formatDate(date)
+        console.log(date)
+
+        return {
+            description,
+            amount,
+            date
+        }
+    },
+
+    saveTransaction(transaction) {
+        Transaction.add(transaction)
+    },
+
+    clearFields() {
+        Form.description.value = ""
+        Form.amount.value = ""
+        Form.date.value = ""
+    },
+
+    Submit(event) {
+
+        event.preventDefault()
+
+        try {
+
+            Form.validateFildes()
+            const transaction = Form.formatValues()
+            Transaction.add(transaction)
+            Form.clearFields()
+            Modal.close()
+
+        } catch (error) {
+
+            alert(error.message)
+
+        }
+
+    }
+}
+
+const App = {
+    Init() {
 
         Transaction.all.forEach(function (transaction) {
             DOM.addTransaction(transaction)
         })
         DOM.updateBalance()
     },
-    Reload(){
+    Reload() {
         DOM.clearTransactions()
         App.Init()
     }
 }
 
 App.Init();
-
- Transaction.remove(0)
