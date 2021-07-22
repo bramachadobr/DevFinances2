@@ -198,12 +198,12 @@ td.description{
     color: var(--dark-color);
 }
 
-td.entrada{
+.entrada{
     color: var(--green);
 }
 
 .saida{
-    color: #e92929;
+    color: var(--red);
 }
 
 /*Modal===================*/
