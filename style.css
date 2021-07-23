@@ -218,6 +218,7 @@ td.description{
     justify-content: center;
     opacity: 0;
     visibility: hidden;
+    z-index: 999;
 }
 
 .modal-overlay.active{
@@ -242,42 +243,41 @@ td.description{
     margin-top: 0;
 }
 
-input{
+#form input{
     border: none;
     border-radius: 0.2rem;
     padding: 0.8rem;
     width: 100%;
 }
 
-.input-group{
+#form .input-group{
     margin: 0.8rem;
 }
 
-.input-group .help{
+#form .input-group .help{
     opacity: 0.4;
 }
 
-.input-group.actions{
+#form .input-group.actions{
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.input-group.actions button,
-.input-group.actions .button{
+#form .input-group.actions button,
+#form .input-group.actions .button{
     width: 48%;
 }
 
 
 /*Footer===================*/
 
-footer{
+footer {
     text-align: center;
+    color: var(--dark-blue);
+    opacity: 0.6;
     padding: 4rem 0 2rem;
-    color: var(--dark-color);
-    opacity: 0.7;
-
-}
+  }
 
 /*Responsive===================*/
 /*abaixo de 800px aplica o CSS @media = true, acima de 800px aplica a regra do CSS de cima*/

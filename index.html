@@ -34,21 +34,21 @@
                     <span>Entradas</span>
                     <img src="./assets/income.svg" alt="Imagem de entrada">
                 </h3>
-                <p id="entradaDisplay">R$ 5.000,00</p>
+                <p id="entradaDisplay">R$ 0,00</p>
             </div>
             <div class="card" id="card">
                 <h3>
                     <span>Saída</span>
                     <img  src="./assets/expense.svg" alt="Imagem de entrada">
                 </h3>
-                <p id="saidaDisplay">R$ 3.000,00</p>
+                <p id="saidaDisplay">R$ 0,00</p>
             </div>
             <div class="card total" id="card">
                 <h3>
                     <span>Total</span>
                     <img src="./assets/total.svg" alt="Imagem de entrada">
                 </h3>
-                <p id="totalDisplay">R$ 2.000,00</p>
+                <p id="totalDisplay">R$ 0,00</p>
             </div>
         </section>
 
@@ -78,12 +78,12 @@
 
     </main>
 
-    <!-- active -->
+    <!-- active Modal -->
     <div id="modal-overlay" class="modal-overlay">
         <div class="modal">
             <div id="form">
                 <h2>Nova Transação</h2>
-                <form action="" onsubmit="Form.Submit(event)">
+                <form action onsubmit="Form.submit(event)">
                     <div class="input-group">
                         <label class="sr-only" for="description">Descrição</label>
                         <input id="description" 

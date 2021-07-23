@@ -15,47 +15,36 @@ let Modal = {
     }
 }
 
+const StorageTransactions={
+    get(){
+
+        return JSON.parse(localStorage.getItem("@devFinances:transactions")) || []
+
+    },
+
+    set(transactions){
+
+        localStorage.setItem("@devFinances:transactions", JSON.stringify(transactions))
+    }
+}
 
 const Transaction = {
-    all: [{
-        id: 1,
-        description: 'Luz',
-        amount: -500022,
-        date: '23/01/2021',
-    },
-    {
-        id: 2,
-        description: 'Site criação',
-        amount: 500101,
-        date: '23/01/2021',
-    },
-    {
-        id: 3,
-        description: 'Internet',
-        amount: -200111,
-        date: '23/01/2021',
-    },
-    {
-        id: 4,
-        description: 'APP',
-        amount: 200333,
-        date: '23/01/2021',
-    }],
+    all: StorageTransactions.get(),
 
     add(transaction) {
-        Transaction.all.push(transaction)
-        console.log(Transaction.all)
-        App.Reload()
+        this.all.push(transaction)
+        console.log(this.all)
+        App.reload()
     },
 
     remove(index) {
-        Transaction.all.splice(index, 1)
-        App.Reload();
+        this.all.splice(index, 1)
+        App.reload();
     },
 
     incons() {
         let income = 0
-        Transaction.all.forEach(element => {
+        this.all.forEach(element => {
             if (element.amount >= 0) {
                 income = income + element.amount
             }
@@ -67,7 +56,7 @@ const Transaction = {
     expenses() {
 
         let expanse = 0
-        Transaction.all.forEach(element => {
+        this.all.forEach(element => {
             if (element.amount < 0) {
                 expanse = expanse + element.amount
             }
@@ -76,7 +65,7 @@ const Transaction = {
     },
 
     total() {
-        return Transaction.incons() + Transaction.expenses()
+        return this.incons() + this.expenses()
 
     }
 
@@ -115,30 +104,20 @@ const DOM = {
     },
 
     clearTransactions() {
-        DOM.transactionContainer.innerHTML = ""
-    }
-}
-
-const Storage={
-    get(){
-        console.log(localStorage)
-    },
-
-    set(transaction){
-
-        localStorage.setItem("Dev.finances", JSON.stringify(transaction))
+        this.transactionContainer.innerHTML = ""
     }
 }
 
 const Utils = {
     formatAmount(value) {
         value = Number(value) * 100
+        //return Number(value.replace(/\,\./g, "")) * 100;
         return value
     },
     formatDate(value) {
-        const splitteDate = value.split("-")
-        console.log(splitteDate)
-        return `${splitteDate[2]}/${splitteDate[1]}/${splitteDate[0]}`
+
+        const [year, month, day] = value.split("-")
+        return `${day}/${month}/${year}`
     },
     formatCurrency(value) {
         const signal = Number(value) < 0 ? "-" : ""
@@ -178,7 +157,6 @@ const Form = {
         let { description, amount, date } = this.getValues()
         amount = Utils.formatAmount(amount)
         date = Utils.formatDate(date)
-        console.log(date)
 
         return {
             description,
@@ -188,25 +166,27 @@ const Form = {
     },
 
     saveTransaction(transaction) {
+        console.log(transaction)
         Transaction.add(transaction)
+        
     },
 
     clearFields() {
-        Form.description.value = ""
-        Form.amount.value = ""
-        Form.date.value = ""
+        this.description.value = ""
+        this.amount.value = ""
+        this.date.value = ""
     },
 
-    Submit(event) {
+    submit(event) {
 
         event.preventDefault()
 
         try {
 
-            Form.validateFildes()
-            const transaction = Form.formatValues()
-            Form.saveTransaction(transaction)
-            Form.clearFields()
+            this.validateFildes()
+            const transaction = this.formatValues()
+            this.saveTransaction(transaction)
+            this.clearFields()
             Modal.close()
 
         } catch (error) {
@@ -218,20 +198,20 @@ const Form = {
 }
 
 const App = {
-    Init() {
+    init() {
 
         Transaction.all.forEach(function (transaction,index) {
             DOM.addTransaction(transaction, index)
         })
         DOM.updateBalance()
+
+        StorageTransactions.set(transaction.all)
+
     },
-    Reload() {
+    reload() {
         DOM.clearTransactions()
-        App.Init()
+        this.init()
     }
 }
 
-App.Init();
-
-Storage.get();
-Storage.set();
+App.init();
