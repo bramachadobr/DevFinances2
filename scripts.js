@@ -15,30 +15,31 @@ let Modal = {
     }
 }
 
+
 const Transaction = {
     all: [{
         id: 1,
         description: 'Luz',
         amount: -500022,
-        data: '23/01/2021',
+        date: '23/01/2021',
     },
     {
         id: 2,
         description: 'Site criação',
         amount: 500101,
-        data: '23/01/2021',
+        date: '23/01/2021',
     },
     {
         id: 3,
         description: 'Internet',
         amount: -200111,
-        data: '23/01/2021',
+        date: '23/01/2021',
     },
     {
         id: 4,
         description: 'APP',
         amount: 200333,
-        data: '23/01/2021',
+        date: '23/01/2021',
     }],
 
     add(transaction) {
@@ -87,11 +88,11 @@ const DOM = {
 
     addTransaction(transaction, index) {
         const tr = document.createElement('tr')
-        tr.innerHTML = DOM.innerHtmlTransaction(transaction)
+        tr.innerHTML = DOM.innerHtmlTransaction(transaction, index)
         DOM.transactionContainer.appendChild(tr)
     },
 
-    innerHtmlTransaction(transaction) {
+    innerHtmlTransaction(transaction, index) {
 
         const CSSclass = transaction.amount > 0 ? "entrada" : "saida"
         const amount = Utils.formatCurrency(transaction.amount)
@@ -99,7 +100,10 @@ const DOM = {
         <td class="description">${transaction.description}</td>
         <td class="${CSSclass}">${amount}</td>
         <td class="date">${transaction.date}</td>
-        <td><img src="./assets/minus.svg" alt="Remover transação"></td>
+        <td>
+            <img onclick="Transaction.remove(${index})" src="./assets/minus.svg" 
+            alt="Remover transação">
+        </td>
         `
         return html
     },
@@ -112,6 +116,17 @@ const DOM = {
 
     clearTransactions() {
         DOM.transactionContainer.innerHTML = ""
+    }
+}
+
+const Storage={
+    get(){
+        console.log(localStorage)
+    },
+
+    set(transaction){
+
+        localStorage.setItem("Dev.finances", JSON.stringify(transaction))
     }
 }
 
@@ -133,11 +148,9 @@ const Utils = {
             style: "currency",
             currency: "BRL"
         })
-
         return value = signal + value
     }
 }
-
 
 const Form = {
 
@@ -192,7 +205,7 @@ const Form = {
 
             Form.validateFildes()
             const transaction = Form.formatValues()
-            Transaction.add(transaction)
+            Form.saveTransaction(transaction)
             Form.clearFields()
             Modal.close()
 
@@ -201,15 +214,14 @@ const Form = {
             alert(error.message)
 
         }
-
     }
 }
 
 const App = {
     Init() {
 
-        Transaction.all.forEach(function (transaction) {
-            DOM.addTransaction(transaction)
+        Transaction.all.forEach(function (transaction,index) {
+            DOM.addTransaction(transaction, index)
         })
         DOM.updateBalance()
     },
@@ -220,3 +232,6 @@ const App = {
 }
 
 App.Init();
+
+Storage.get();
+Storage.set();
